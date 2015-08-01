@@ -26,6 +26,10 @@ class ZabbixManager
   def graphs
     graphs = zabbix.graphs.get(output: 'extend', hostids: 10084)
   end
+
+  def items(graphid)
+    items = zabbix.items.get(output: 'extend', graphs: graphid)
+  end
 end
 
 def main
@@ -37,7 +41,13 @@ def main
   zm = ZabbixManager.new(config[:user], config[:password])
   zm.print_version
   zm.graphs.each do |graph|
-    puts graph['name']
+    graphid = graph['graphid'].to_i
+    puts '%03d: %s' % [graphid, graph['name']]
+    #graph['name'].include?('')
+    #items = zm.items(graphid)
+    #items.each do |item|
+    #  p item
+    #end
   end
 end
 
