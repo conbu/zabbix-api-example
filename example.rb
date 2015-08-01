@@ -50,7 +50,7 @@ def main
     items = zm.items(graphid.to_s)
     items.each do |item|
       next unless item['name'].include? 'GHz'
-      p item
+      puts '%03d: %s' % [item['itemid'].to_i, item['name']]
     end
   end
 end
