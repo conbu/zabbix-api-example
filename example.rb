@@ -28,7 +28,8 @@ class ZabbixManager
   end
 
   def items(graphid)
-    items = zabbix.items.get(output: 'extend', graphs: graphid)
+    # items = zabbix.graphs.get_items(graphid)
+    items = zabbix.items.get(output: 'extend', graphids: graphid)
   end
 end
 
@@ -41,13 +42,16 @@ def main
   zm = ZabbixManager.new(config[:user], config[:password])
   zm.print_version
   zm.graphs.each do |graph|
+    graphname = graph['name']
+    next unless graphname.include? 'Associations'
+    next unless graphname.include? 'Total'
     graphid = graph['graphid'].to_i
-    puts '%03d: %s' % [graphid, graph['name']]
-    #graph['name'].include?('')
-    #items = zm.items(graphid)
-    #items.each do |item|
-    #  p item
-    #end
+    puts '%03d: %s' % [graphid, graphname]
+    items = zm.items(graphid.to_s)
+    items.each do |item|
+      next unless item['name'].include? 'GHz'
+      p item
+    end
   end
 end
 
